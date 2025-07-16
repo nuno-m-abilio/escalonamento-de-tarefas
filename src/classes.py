@@ -12,6 +12,16 @@ class Tarefa:
     prioridadeEst:int
     prioridadeDin:int
 
+class Algoritmo(Enum):
+    '''Tipo do algoritmo de priorização em execução.'''
+    fcfs = 0
+    rr = 1
+    sjf = 2
+    srtf = 3
+    prioc = 4
+    priop = 5
+    priod = 6
+
 class Criterio(Enum):
     '''Tipo enumerado para ser usado como identificador do citério de ordenação para o método
     ordena da FilaProntas.'''
