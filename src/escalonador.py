@@ -44,27 +44,31 @@ def PRIOp(fila:c.FilaProntas):
 
 def PRIOd(fila:c.FilaProntas):
     '''Ordena as tarefas presentes em self.fila segundo o algoritmo de priorização por
-prioridades dinâmicas (PRIOd). Nesse algoritmo, a cada evento de adição de nova tarefa à
-fila ou encerramento de tarefa, a tarefa com maior prioridade é escolhida. Porém, nesses
-eventos, as tarefas que não foram escalonadas tem sua prioridade aumentada segundo um fator
-de escalonamento a. Além disso, a prioridade dinâmica da tarefa escalonada retrocede à
-prioridade estática. Retorna a tarefa executada neste ciclo de clock'''
+    prioridades dinâmicas (PRIOd). Nesse algoritmo, a cada evento de adição de nova tarefa à
+    fila ou encerramento de tarefa, a tarefa com maior prioridade é escolhida. Porém, nesses
+    eventos, as tarefas que não foram escalonadas tem sua prioridade aumentada segundo um fator
+    de escalonamento a. Além disso, a prioridade dinâmica da tarefa escalonada retrocede à
+    prioridade estática. Retorna a tarefa executada neste ciclo de clock'''
     pass
 
 def main(algoritmo:c.Algoritmo):
     '''Implementa o resto'''
     
-    #Inicialização da parte do escalonador, com as coisas necessárias antes de ouvir coisas do clock e emissor e entrar em loop
-    # Quando o emissor emite, adiciona tanto na fila de prontas quanto no dicionário das tarefas
-    filaProntas = c.FilaProntas
-    tarefas: dict[str, c.Tarefa] = {}
-    processadas:list[str] = []
+    # Inicialização da parte do escalonador, com as coisas necessárias antes de ouvir coisas do clock e emissor e entrar em loop
+    
+    fila_prontas = c.FilaProntas()
+    info_saida = c.InfoSaida()
+    
 
-    #Loop e escutando clock e emissor (Enquanto houver elementos na lista de tarefas prontas e o emissor estiver ativo)
+    # Loop e escutando clock e emissor (Enquanto o emissor estiver ativo e a lista de tarefas
+    # prontas não estiver vazia, escalona a tarefa do momento)
+    # Só passa para o próximo loop quando ouvir o clock
+    # Quando o emissor emite, adiciona na fila de prontas
+    # Recebe as novas tarefas do emissor + ordena a fila se for necessário + Escalona a Tarefa do momento
 
 
 
-    #Finalização,tratamento da saída e avisos de término
+    # Finalização,tratamento da saída a partir dos métodos de FilaSaida e  faz os avisos de término
     
 
 
