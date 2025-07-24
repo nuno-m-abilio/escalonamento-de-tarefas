@@ -1,5 +1,6 @@
 import sys
 import classes as c
+import socket_utils as su
 
 def FCFS(fila:c.FilaProntas):
     '''Ordena as tarefas presentes em self.fila segundo o algoritmo de priorização First-Come,
@@ -54,6 +55,10 @@ def PRIOd(fila:c.FilaProntas):
 def main(algoritmo:c.Algoritmo):
     '''Implementa o resto'''
     
+    PORTA_ESCALONADOR = 4002
+    PORTA_CLOCK = 4000
+    PORTA_EMISSOR = 4001
+
     # Inicialização da parte do escalonador, com as coisas necessárias antes de ouvir coisas do clock e emissor e entrar em loop
     
     fila_prontas = c.FilaProntas()

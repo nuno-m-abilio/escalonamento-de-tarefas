@@ -17,6 +17,26 @@ class Tarefa:
         self.inicio_exe:int|None = None
         self.fim_exe:int|None = None
 
+    def to_dict(self) -> dict:
+        '''Serializa a tarefa para um dicionário compatível com JSON.'''
+        return {
+            "tipo": "tarefa",
+            "id": self.id,
+            "ingresso": self.ingresso,
+            "duracao": self.duracao_total,
+            "prioridade": self.priod_original,
+        }
+
+    @classmethod
+    def from_dict(cls, data: dict) -> "Tarefa":
+        '''Cria uma instância de Tarefa a partir de um dicionário.'''
+        return cls(
+            id=data["id"],
+            ingresso=data["ingresso"],
+            duracao=data["duracao"],
+            prioridade=data["prioridade"]
+        )
+
 class Algoritmo(Enum):
     '''Tipo do algoritmo de priorização em execução.'''
     fcfs = 0
@@ -38,7 +58,7 @@ class InfoSaida:
     '''Estrutura que armazena as tarefas que foram concluídas na simulação e os ids das tarefas
     executadas a cada ciclo de clock, além de implementar os métodos para escrever o arquivo de
     saída com os dados da execução.'''
-    def __init__(self):
+    def __init__(self) -> None:
         '''Inicializa ambas as listas como vazias.'''
         self.tarefas_concluidas:list[Tarefa] = []
         self.id_por_clock:list[str|None] = []
@@ -56,7 +76,7 @@ class InfoSaida:
 class FilaProntas:
     '''Estrutura que armazena as tarefas que o emissor já informou como prontas por já chegarem ao
     seu tempo de ingresso.'''
-    def __init__(self):
+    def __init__(self) -> None:
         '''Inicializa uma lista vazia.'''
         self.fila:list[Tarefa] = []
 
