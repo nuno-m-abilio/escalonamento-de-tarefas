@@ -73,6 +73,35 @@ class InfoSaida:
         será adicionado.'''
         self.id_por_clock.append(id)
 
+    def gera_saida(self) -> None:
+        '''Gera arquivo de saída com: sequência das tarefas por clock; uma linha por tarefa com ID,
+        tempos e métricas; e linha final com médias de turnaround e espera, arredondadas para cima
+        com 1 casa decimal.'''
+        with open("saida.txt", "w") as saida:
+
+            seq = ";".join(id if id is not None else "__" for id in self.id_por_clock)
+            saida.write(seq + "\n")
+
+            tt_sum:int = 0 # vai acumulando o turnaround time
+            wt_sum:int = 0 # vai acumulando o waiting time
+
+            for t in self.tarefas_concluidas:
+                if t.fim_exe is None:
+                    raise ValueError(f"Tarefa {t.id} não foi finalizada.")
+                tt:int = t.fim_exe - t.ingresso  # turnaround time
+                tt_sum += tt
+                wt: int = tt - t.duracao_total # waiting time
+                wt_sum += wt
+                linha = f"{t.id};{t.ingresso};{t.fim_exe};{tt};{wt}\n"
+                saida.write(linha)
+
+            num_tarefas = len(self.tarefas_concluidas)
+            if num_tarefas == 0:
+                raise ValueError("Nenhuma tarefa foi concluída.")
+            tt_medio = round(tt_sum / num_tarefas, 1)
+            wt_medio = round(wt_sum / num_tarefas, 1)
+            saida.write(f"{tt_medio};{wt_medio}")
+
 class FilaProntas:
     '''Estrutura que armazena as tarefas que o emissor já informou como prontas por já chegarem ao
     seu tempo de ingresso.'''
