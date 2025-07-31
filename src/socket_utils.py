@@ -37,10 +37,3 @@ def start_server(my_port: int, on_message):
 
     thread = threading.Thread(target=server_thread, daemon=True)
     thread.start()
-
-def notify_ports(ports: list[int], message: dict, exclude_port: int|None = None):
-    '''Envia uma mensagem para várias portas (exceto a excluída, se fornecida).'''
-    for port in ports:
-        if port == exclude_port:
-            continue
-        send_message(port, message)

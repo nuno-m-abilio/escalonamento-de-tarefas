@@ -50,9 +50,10 @@ class Algoritmo(Enum):
 class Criterio(Enum):
     '''Tipo enumerado para ser usado como identificador do citério de ordenação para o método
     ordena da FilaProntas.'''
-    duracao = 0
-    priod_original = 1
-    priod_dinamica = 2
+    duracao_total = 0
+    duracao_resto = 1
+    priod_original = 2
+    priod_dinamica = 3
 
 class InfoSaida:
     '''Estrutura que armazena as tarefas que foram concluídas na simulação e os ids das tarefas
@@ -133,7 +134,7 @@ class FilaProntas:
             info_saida.add_id_do_clock(tarefa_id)
             if tarefa.duracao_resto == 0:
                 tarefa.fim_exe = clock
-                info_saida.finaliza_tarefa(self.fila.pop(0))
+                info_saida.finaliza_tarefa(self.desenfilera())
                 return tarefa_id, True
             return tarefa_id, False
            

@@ -1,4 +1,3 @@
-# run.py
 import subprocess
 import time
 import sys
