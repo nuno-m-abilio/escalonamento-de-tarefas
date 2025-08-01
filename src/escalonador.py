@@ -93,13 +93,10 @@ def main(algoritmo:c.Algoritmo):
         prioridades fixas cooperativo (PRIOc). Nesse algoritmo, as tarefas são atendidas em ordem
         crescente de prioridade estática, sem alteração das prioridades ou interrupção de tarefas
         já em processamento.'''
-
         if not fila_prontas.is_empty():
             tarefa_candidata = fila_prontas.fila[0]
-
             if tarefa_candidata.duracao_resto == tarefa_candidata.duracao_total:
                 fila_prontas.ordena(c.Criterio.priod_original)
-
         fila_prontas.escalona(clock, info_saida)
 
     def executa_priop(clock: int):
@@ -108,7 +105,6 @@ def main(algoritmo:c.Algoritmo):
         crescente de prioridade estática, com as prioridades não sendo alteradas nunca, porém, a
         cada ciclo de clock, uma nova tarefa que surge com maior prioridade toma o lugar da
         anterior.'''
-
         fila_prontas.ordena(c.Criterio.priod_original)
         fila_prontas.escalona(clock, info_saida)
 

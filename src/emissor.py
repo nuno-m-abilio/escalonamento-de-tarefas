@@ -6,7 +6,6 @@ import time
 
 def main(entrada):
 
-    # Portas Sockets
     PORTA_EMISSOR = 4001
     PORTA_ESCALONADOR = 4002
 

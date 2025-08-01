@@ -12,7 +12,7 @@ def main():
     def trata_mensagem(mensagem: dict, addr):
         nonlocal rodando
         tipo = mensagem.get("tipo")
-        if tipo == "fim_simulacao":
+        if tipo == "fim_simulacao": # Escalonador manda essa mensagem quando termina
             print("[Clock] Recebeu sinal de fim da simulação. Encerrando...")
             rodando = False
 
