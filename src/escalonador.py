@@ -19,8 +19,9 @@ def main(algoritmo:c.Algoritmo):
     # Estados de controle
     emissao_finalizada = False
     simulacao_ativa = True
-    tarefa_executando = None  # Para algoritmos preemptivos
-    quantum_atual = 0        # Para Round-Robin
+    tarefa_finalizada_ultimo_clock = False  # Para Round-Robin
+    quantum_atual = 3        # Para Round-Robin
+    houve_evento_priod = False
 
     # IMPLEMENTAÇÃO DOS ALGORITMOS DE ESCALONAMENTO -----------------------------------------------
 
@@ -28,28 +29,64 @@ def main(algoritmo:c.Algoritmo):
         '''Ordena as tarefas presentes em self.fila segundo o algoritmo de priorização First-Come,
         First-Served (FCFS). Nesse algoritmo, as tarefas são atendidas na sequência que elas chegam
         no estado de “pronta”.'''
-        pass
+        fila_prontas.escalona(clock, info_saida)
 
     def executa_rr(clock: int):
         '''Ordena as tarefas presentes em self.fila segundo o algoritmo de priorização Round-Robin
         (RR) com quantum fixo de 3 unidades de clock. Nesse algoritmo, as tarefas são atendidas na
         sequência que elas chegam no estado de “pronta”, mas a cada vez que um quantum termina, a
         tarefa volta para a fila de tarefas prontas.'''
-        nonlocal quantum_atual, tarefa_executando
-        pass
+        nonlocal quantum_atual, tarefa_finalizada_ultimo_clock
+        QUANTUM = 3
+        
+        # Se não há tarefas na fila, escalona() vai registrar ciclo vazio
+        if fila_prontas.is_empty():
+            fila_prontas.escalona(clock, info_saida)
+            return None
+        
+        # Se uma tarefa foi finalizada no último clock ou é o primeiro ciclo, reseta quantum
+        if tarefa_finalizada_ultimo_clock or quantum_atual == 0:
+            quantum_atual = QUANTUM
+            tarefa_finalizada_ultimo_clock = False
+        
+        # Executa a tarefa usando escalona()
+        resultado = fila_prontas.escalona(clock, info_saida)
+        quantum_atual -= 1
+        
+        # Verifica se a tarefa foi finalizada
+        if resultado is not None:
+            tarefa_id, finalizada = resultado
+            if finalizada:
+                tarefa_finalizada_ultimo_clock = True
+                quantum_atual = 0  # Reset para próxima tarefa
+                return None
+        
+        # Se quantum esgotou e ainda há tarefa executando, faz preempção
+        if quantum_atual == 0 and not fila_prontas.is_empty():
+            # Move a tarefa atual para o final da fila
+            print("PREENPTOU AQUI")
+            tarefa_preemptada = fila_prontas.desenfilera()
+            fila_prontas.enfilera(tarefa_preemptada)
 
     def executa_sjf(clock: int):
         '''Ordena as tarefas presentes em self.fila segundo o algoritmo de priorização Shortest Job
         First (SJF). Nesse algoritmo, as tarefas são atendidas em ordem crescente de duração
         estimada.'''
-        pass
+        if not fila_prontas.is_empty():
+            tarefa_candidata = fila_prontas.fila[0]
+            if tarefa_candidata.duracao_total == tarefa_candidata.duracao_resto:
+                fila_prontas.ordena(c.Criterio.duracao_total)
+        fila_prontas.escalona(clock, info_saida)
+
 
     def executa_srtf(clock: int):
         '''Ordena as tarefas presentes em self.fila segundo o algoritmo de priorização Shortest
         Remaining Time First (SRTF). Nesse algoritmo, as tarefas são atendidas em ordem crescente
         de duração estimada restante, ou seja, a cada ciclo de clock é feita uma nova comparação
         para definir a tarefa, que tem uma unidade de tempo restante decrementada logo em seguida.'''
-        pass
+        fila_prontas.ordena(c.Criterio.duracao_resto)
+        fila_prontas.escalona(clock, info_saida)
+
 
     def executa_prioc(clock: int):
         '''Ordena as tarefas presentes em self.fila segundo o algoritmo de priorização por
@@ -73,7 +110,39 @@ def main(algoritmo:c.Algoritmo):
         eventos, as tarefas que não foram escalonadas tem sua prioridade aumentada segundo um fator
         de escalonamento a. Além disso, a prioridade dinâmica da tarefa escalonada retrocede à
         prioridade estática. Retorna a tarefa executada neste ciclo de clock'''
-        pass
+        nonlocal houve_evento_priod
+        
+        FATOR_ENVELHECIMENTO = 1
+        
+        # Se não há tarefas na fila, escalona() vai registrar ciclo vazio
+        if fila_prontas.is_empty():
+            fila_prontas.escalona(clock, info_saida)
+            return
+        
+        # Se houve evento (nova tarefa ou tarefa finalizada), aplica regras PRIOd
+        if houve_evento_priod:
+            
+            # 1. Escolhe a tarefa com maior prioridade dinâmica (menor valor numérico)
+            fila_prontas.ordena(c.Criterio.priod_dinamica)
+            tarefa_escolhida = fila_prontas.fila[0]
+            
+            # 2. Tarefas NÃO escalonadas têm prioridade melhorada (aging)
+            for tarefa in fila_prontas.fila:
+                if tarefa != tarefa_escolhida:
+                    # Melhora prioridade (diminui valor) respeitando limite mínimo de 1
+                    tarefa.priod_dinamica = max(1, tarefa.priod_dinamica - FATOR_ENVELHECIMENTO)
+            
+            # 3. Tarefa escalonada retrocede à prioridade estática
+            tarefa_escolhida.priod_dinamica = tarefa_escolhida.priod_original
+        
+        # Executa a tarefa com maior prioridade dinâmica
+        resultado = fila_prontas.escalona(clock, info_saida)
+        
+        # Se uma tarefa foi finalizada, marca evento para próximo ciclo
+        if resultado is not None:
+            tarefa_id, finalizada = resultado
+            if finalizada:
+                houve_evento_priod = True
 
     # Mapeamento dos algoritmos para suas funções
     algoritmos = {
@@ -90,7 +159,7 @@ def main(algoritmo:c.Algoritmo):
 
     def trata_mensagem(mensagem: dict, addr):
         """Função callback para tratar mensagens recebidas via socket"""
-        nonlocal emissao_finalizada
+        nonlocal emissao_finalizada, houve_evento_priod
         
         tipo_msg = mensagem.get("tipo")
         
@@ -103,6 +172,9 @@ def main(algoritmo:c.Algoritmo):
             funcao_algoritmo = algoritmos[algoritmo]
             funcao_algoritmo(clock_atual)
             
+            # Reset das flags após processar o ciclo
+            houve_evento_priod = False
+            
             # Verifica se deve finalizar a simulação
             if emissao_finalizada and fila_prontas.is_empty():
                 print("[Escalonador] Todas as tarefas foram concluídas. Finalizando simulação...")
@@ -113,6 +185,7 @@ def main(algoritmo:c.Algoritmo):
             nova_tarefa = c.Tarefa.from_dict(mensagem)
             print(f"[Escalonador] Nova tarefa recebida: {nova_tarefa.id}")
             fila_prontas.enfilera(nova_tarefa)
+            houve_evento_priod = True
             
         elif tipo_msg == "fim_emissao":
             # Mensagem do Emissor indicando que todas as tarefas foram emitidas

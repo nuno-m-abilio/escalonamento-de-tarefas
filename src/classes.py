@@ -76,9 +76,11 @@ class InfoSaida:
 
     def gera_saida(self) -> None:
         '''Gera arquivo de saída com: sequência das tarefas por clock; uma linha por tarefa com ID,
-        tempos e métricas; e linha final com médias de turnaround e espera, arredondadas para cima
-        com 1 casa decimal.'''
+        tempos e métricas; e linha final com médias de turnaround e espera, arredondadas com 1 casa
+        decimal.'''
         with open("saida.txt", "w") as saida:
+
+            self.tarefas_concluidas.sort(key=lambda t: getattr(t, "id"))
 
             seq = ";".join(id if id is not None else "__" for id in self.id_por_clock)
             saida.write(seq + "\n")
@@ -133,7 +135,7 @@ class FilaProntas:
             tarefa_id = tarefa.id
             info_saida.add_id_do_clock(tarefa_id)
             if tarefa.duracao_resto == 0:
-                tarefa.fim_exe = clock
+                tarefa.fim_exe = clock + 1
                 info_saida.finaliza_tarefa(self.desenfilera())
                 return tarefa_id, True
             return tarefa_id, False
