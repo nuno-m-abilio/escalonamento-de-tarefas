@@ -180,7 +180,6 @@ def main(algoritmo:c.Algoritmo):
             # Executa o algoritmo de escalonamento ativo
             funcao_algoritmo = algoritmos[algoritmo]
             funcao_algoritmo(clock_atual)
-            houve_evento_priod = False
             
             # Reset das flags após processar o ciclo
             houve_evento_priod = False
