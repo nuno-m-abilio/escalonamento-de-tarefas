@@ -20,6 +20,7 @@ def main():
     socket.start_server(PORTA_CLOCK, trata_mensagem)
 
     while rodando:
+        print(f"[Clock] Iniciando ciclo de clock: {clock}")
         socket.send_message(PORTA_EMISSOR, {"tipo": "ciclo", "valor": clock})
         time.sleep(0.005)
         socket.send_message(PORTA_ESCALONADOR, {"tipo": "ciclo", "valor": clock})

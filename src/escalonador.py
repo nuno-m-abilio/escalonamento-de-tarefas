@@ -26,13 +26,13 @@ def main(algoritmo:c.Algoritmo):
     # IMPLEMENTAÇÃO DOS ALGORITMOS DE ESCALONAMENTO -----------------------------------------------
 
     def executa_fcfs(clock: int):
-        '''Ordena as tarefas presentes em self.fila segundo o algoritmo de priorização First-Come,
+        '''Escalona uma tarefa presente em self.fila segundo o algoritmo de priorização First-Come,
         First-Served (FCFS). Nesse algoritmo, as tarefas são atendidas na sequência que elas chegam
         no estado de “pronta”.'''
         fila_prontas.escalona(clock, info_saida)
 
     def executa_rr(clock: int):
-        '''Ordena as tarefas presentes em self.fila segundo o algoritmo de priorização Round-Robin
+        '''Escalona uma tarefa presente em self.fila segundo o algoritmo de priorização Round-Robin
         (RR) com quantum fixo de 3 unidades de clock. Nesse algoritmo, as tarefas são atendidas na
         sequência que elas chegam no estado de “pronta”, mas a cada vez que um quantum termina, a
         tarefa volta para a fila de tarefas prontas.'''
@@ -64,12 +64,12 @@ def main(algoritmo:c.Algoritmo):
         # Se quantum esgotou e ainda há tarefa executando, faz preempção
         if quantum_atual == 0 and not fila_prontas.is_empty():
             # Move a tarefa atual para o final da fila
-            print("PREENPTOU AQUI")
             tarefa_preemptada = fila_prontas.desenfilera()
             fila_prontas.enfilera(tarefa_preemptada)
+            print(f"[Escalonador] Tarefa {tarefa_id} preempetada.")
 
     def executa_sjf(clock: int):
-        '''Ordena as tarefas presentes em self.fila segundo o algoritmo de priorização Shortest Job
+        '''Escalona uma tarefa presente em self.fila segundo o algoritmo de priorização Shortest Job
         First (SJF). Nesse algoritmo, as tarefas são atendidas em ordem crescente de duração
         estimada.'''
         if not fila_prontas.is_empty():
@@ -80,7 +80,7 @@ def main(algoritmo:c.Algoritmo):
 
 
     def executa_srtf(clock: int):
-        '''Ordena as tarefas presentes em self.fila segundo o algoritmo de priorização Shortest
+        '''Escalona uma tarefa presente em self.fila segundo o algoritmo de priorização Shortest
         Remaining Time First (SRTF). Nesse algoritmo, as tarefas são atendidas em ordem crescente
         de duração estimada restante, ou seja, a cada ciclo de clock é feita uma nova comparação
         para definir a tarefa, que tem uma unidade de tempo restante decrementada logo em seguida.'''
@@ -89,7 +89,7 @@ def main(algoritmo:c.Algoritmo):
 
 
     def executa_prioc(clock: int):
-        '''Ordena as tarefas presentes em self.fila segundo o algoritmo de priorização por
+        '''Escalona uma tarefa presente em self.fila segundo o algoritmo de priorização por
         prioridades fixas cooperativo (PRIOc). Nesse algoritmo, as tarefas são atendidas em ordem
         crescente de prioridade estática, sem alteração das prioridades ou interrupção de tarefas
         já em processamento.'''
@@ -100,7 +100,7 @@ def main(algoritmo:c.Algoritmo):
         fila_prontas.escalona(clock, info_saida)
 
     def executa_priop(clock: int):
-        '''Ordena as tarefas presentes em self.fila segundo o algoritmo de priorização por
+        '''Escalona uma tarefa presente em self.fila segundo o algoritmo de priorização por
         prioridades fixas preemptivo(PRIOp). Nesse algoritmo, as tarefas são atendidas em ordem
         crescente de prioridade estática, com as prioridades não sendo alteradas nunca, porém, a
         cada ciclo de clock, uma nova tarefa que surge com maior prioridade toma o lugar da
@@ -109,7 +109,7 @@ def main(algoritmo:c.Algoritmo):
         fila_prontas.escalona(clock, info_saida)
 
     def executa_priod(clock: int):
-        '''Ordena as tarefas presentes em self.fila segundo o algoritmo de priorização por
+        '''Escalona uma tarefa presente em self.fila segundo o algoritmo de priorização por
         prioridades dinâmicas (PRIOd). Nesse algoritmo, a cada evento de adição de nova tarefa à
         fila ou encerramento de tarefa, a tarefa com maior prioridade é escolhida. Porém, nesses
         eventos, as tarefas que não foram escalonadas tem sua prioridade aumentada segundo um fator
@@ -170,8 +170,7 @@ def main(algoritmo:c.Algoritmo):
         
         if tipo_msg == "ciclo":
             # Mensagem do Clock
-            clock_atual:int = mensagem.get("valor") # type: ignore 
-            print(f"[Escalonador] Clock: {clock_atual}")
+            clock_atual:int = mensagem.get("valor") # type: ignore
             
             # Executa o algoritmo de escalonamento ativo
             funcao_algoritmo = algoritmos[algoritmo]

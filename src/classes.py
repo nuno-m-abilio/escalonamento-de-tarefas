@@ -134,9 +134,11 @@ class FilaProntas:
             tarefa.duracao_resto -= 1
             tarefa_id = tarefa.id
             info_saida.add_id_do_clock(tarefa_id)
+            print(f"[Escalonador] Tarefa {tarefa_id} foi escalonada.")
             if tarefa.duracao_resto == 0:
                 tarefa.fim_exe = clock + 1
                 info_saida.finaliza_tarefa(self.desenfilera())
+                print(f"[Escalonador] Tarefa {tarefa_id} finalizada.")
                 return tarefa_id, True
             return tarefa_id, False
            

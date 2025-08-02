@@ -48,7 +48,6 @@ def main(entrada):
         # Caso a mensagem recebida seja de ciclo de clock:
         if tipo_msg == "ciclo":
             clock_atual = mensagem.get("valor")
-            print(f"[Emissor] Recebeu ciclo de clock: {clock_atual}")
 
             # Cria uma lista de tarefas que estão prontas para serem enviadas neste ciclo
             tarefas_prontas = []
@@ -59,7 +58,7 @@ def main(entrada):
             for tarefa in tarefas_prontas:
                 # Converte o objeto Tarefa para um dicionário para ser enviado
                 msg_tarefa = c.Tarefa.to_dict(tarefa)
-                print(f"[Emissor] Tarefa '{tarefa.id}' pronta. Enviando para o Escalonador.")
+                print(f"[Emissor] Tarefa {tarefa.id} pronta. Enviando para o Escalonador.")
                 socket.send_message(PORTA_ESCALONADOR, msg_tarefa)
                 # Remove a tarefa da lista de agendadas após o envio
                 tarefas_agendadas.remove(tarefa)
